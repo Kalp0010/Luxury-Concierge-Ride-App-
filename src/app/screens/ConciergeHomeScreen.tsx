@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { GlassCard, GoldButton } from '../components/GlassCard';
-import { Car, Wallet, Clock, TrendingUp, History, User, Users } from 'lucide-react';
+import { Car, Wallet, TrendingUp, History, User } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { motion } from 'motion/react';
 
@@ -20,7 +20,7 @@ export const ConciergeHomeScreen = () => {
         >
           <div>
             <h1 className="text-2xl text-white font-bold">{user?.name}</h1>
-            <p className="text-base text-gray-400 font-medium">{user?.hotelName}</p>
+            <p className="text-base text-gray-400 font-medium">{user?.hotelName || 'Luxury Concierge'}</p>
           </div>
           <motion.button 
             onClick={() => navigate('/profile')} 
@@ -32,7 +32,7 @@ export const ConciergeHomeScreen = () => {
           </motion.button>
         </motion.div>
 
-        {/* Primary CTA */}
+        {/* Primary CTA - Streamlined for single action */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -45,23 +45,26 @@ export const ConciergeHomeScreen = () => {
             >
               <Car className="w-16 h-16 text-[#D4AF37] mx-auto mb-4" />
             </motion.div>
-            <h2 className="text-2xl mb-4 text-white font-bold">Create New Ride</h2>
+            <h2 className="text-2xl mb-4 text-white font-bold">Request Guest Transport</h2>
             <GoldButton 
-              onClick={() => navigate('/guest-details')} 
+              onClick={() => navigate('/ride-config')} 
               className="w-full max-w-md mx-auto text-xl py-5 rounded-2xl"
             >
               CALL CAR
             </GoldButton>
+            <p className="mt-4 text-sm text-gray-500 font-medium italic">
+              Tracking link will be sent automatically to the guest
+            </p>
           </GlassCard>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid - Focused on Performance */}
         <div className="grid grid-cols-2 gap-4">
           {[
             { icon: Wallet, label: "Today's Earnings", value: "$142.50", delay: 0.3 },
             { icon: Car, label: "Rides Today", value: "12", delay: 0.35 },
-            { icon: Clock, label: "Avg ETA", value: "4.2 min", delay: 0.4 },
-            { icon: TrendingUp, label: "This Week", value: "$856", delay: 0.45 },
+            { icon: TrendingUp, label: "Weekly Growth", value: "+15%", delay: 0.45 },
+            { icon: History, label: "Recent Payout", value: "$856", delay: 0.4 },
           ].map(({ icon: Icon, label, value, delay }) => (
             <motion.div
               key={label}
@@ -79,7 +82,7 @@ export const ConciergeHomeScreen = () => {
           ))}
         </div>
 
-        {/* Quick Actions */}
+        {/* Preserved Secondary Actions */}
         <motion.div 
           className="grid grid-cols-1 gap-4"
           initial={{ opacity: 0, y: 20 }}
@@ -87,11 +90,12 @@ export const ConciergeHomeScreen = () => {
           transition={{ duration: 0.5, delay: 0.5 }}
         >
           <GoldButton 
-            onClick={() => navigate('/driver-list')} 
+            variant="ghost" 
+            onClick={() => navigate('/history')} 
             className="p-4 justify-center text-lg border-[#D4AF37]/20"
-            icon={<Users className="w-6 h-6" />}
+            icon={<History className="w-6 h-6" />}
           >
-            Manual Driver Selection
+            Ride History
           </GoldButton>
           <GoldButton 
             variant="ghost" 
@@ -100,14 +104,6 @@ export const ConciergeHomeScreen = () => {
             icon={<Wallet className="w-6 h-6" />}
           >
             Commission Wallet
-          </GoldButton>
-          <GoldButton 
-            variant="ghost" 
-            onClick={() => navigate('/history')} 
-            className="p-4 justify-center text-lg border-[#D4AF37]/20"
-            icon={<History className="w-6 h-6" />}
-          >
-            Ride History
           </GoldButton>
         </motion.div>
       </div>

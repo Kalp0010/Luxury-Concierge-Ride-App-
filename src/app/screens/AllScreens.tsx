@@ -194,6 +194,7 @@ export const KYCPendingScreen = () => {
 };
 
 // Guest Details Screen
+
 // export const GuestDetailsScreen = () => {
 //   const navigate = useNavigate();
 //   const [guestPresent, setGuestPresent] = useState(true);
@@ -381,7 +382,7 @@ export const GuestDetailsScreen = () => {
             </div>
           </div>
           <GoldButton 
-            onClick={() => navigate('/ride-config')} 
+            onClick={() => navigate('/waiting-payment')} 
             className="w-full"
             disabled={!guestPhone}
           >
@@ -588,129 +589,55 @@ export const GuestDetailsScreen = () => {
 export const RideConfigScreen = () => {
   const navigate = useNavigate();
   const { user } = useApp();
-  const [vehicleType, setVehicleType] = useState('stretch-limo');
-  const [paymentType, setPaymentType] = useState('card');
-  const [bookingMode, setBookingMode] = useState<'instant' | 'scheduled'>('instant');
 
   return (
     <div className="min-h-screen p-4 bg-black">
       <div className="max-w-2xl mx-auto">
         <GlassCard className="p-8">
-          <h2 className="text-2xl mb-6 text-white font-bold">Ride Configuration</h2>
+          <h2 className="text-2xl mb-6 text-white font-bold uppercase italic">Ride Configuration</h2>
           
           {/* Requirement 1.6: Auto-derived Pickup Location */}
-          <div className="mb-8 p-5 bg-[#D4AF37]/10 rounded-xl border-2 border-[#D4AF37]/40">
-            <p className="text-xs text-[#D4AF37] font-black uppercase tracking-widest mb-1">Pickup Location</p>
-            <p className="text-xl text-white font-bold">{user?.hotelName || "The Grand Majestic Hotel"}</p>
-            <p className="text-xs text-gray-500 mt-2">Location auto-detected based on your profile.</p>
-          </div>
-
-          <div className="space-y-8">
-            {/* Requirement 4.1: Scheduling Option */}
-            <div>
-              <label className="block mb-4 text-base text-white font-bold uppercase tracking-wider">Ride Timing</label>
-              <div className="grid grid-cols-2 gap-3">
-                <motion.button
-                  onClick={() => setBookingMode('instant')}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`p-5 rounded-xl border-2 transition-all flex flex-col items-center ${
-                    bookingMode === 'instant' ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30' : 'border-[#D4AF37]/30 bg-black/60'
-                  }`}
-                >
-                  <Clock className={`w-8 h-8 mb-2 ${bookingMode === 'instant' ? 'text-[#D4AF37]' : 'text-gray-400'}`} />
-                  <p className={`text-sm font-bold ${bookingMode === 'instant' ? 'text-[#D4AF37]' : 'text-gray-400'}`}>Instant Ride</p>
-                </motion.button>
-
-                <motion.button
-                  onClick={() => setBookingMode('scheduled')}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`p-5 rounded-xl border-2 transition-all flex flex-col items-center ${
-                    bookingMode === 'scheduled' ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30' : 'border-[#D4AF37]/30 bg-black/60'
-                  }`}
-                >
-                  <Calendar className={`w-8 h-8 mb-2 ${bookingMode === 'scheduled' ? 'text-[#D4AF37]' : 'text-gray-400'}`} />
-                  <p className={`text-sm font-bold ${bookingMode === 'scheduled' ? 'text-[#D4AF37]' : 'text-gray-400'}`}>Schedule Future</p>
-                </motion.button>
-              </div>
-            </div>
-            
-            {/* Requirement 5.1: Driver Selection logic for Scheduled Rides */}
-            {bookingMode === 'scheduled' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <label className="block mb-4 text-base text-white font-bold uppercase tracking-wider">Driver Assignment</label>
-                <GoldButton 
-                  variant="ghost" 
-                  onClick={() => navigate('/driver-list')} 
-                  className="w-full py-4 border-dashed border-2 border-[#D4AF37]/40 hover:bg-[#D4AF37]/5"
-                  icon={<UserCheck className="w-5 h-5" />}
-                >
-                  Select Preferred Driver
-                </GoldButton>
-              </motion.div>
-            )}
-
-            {/* Luxury Vehicle Type Selection */}
-            <div>
-              <label className="block mb-4 text-base text-white font-bold uppercase tracking-wider">Luxury Vehicle Type</label>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { value: 'stretch-limo', label: 'Stretch Limousine', icon: Car },
-                  { value: 'sedan-limo', label: 'Sedan Limousine', icon: Car },
-                ].map(({ value, label, icon: Icon }) => (
-                  <motion.button
-                    key={value}
-                    onClick={() => setVehicleType(value)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`p-5 rounded-xl border-2 transition-all ${
-                      vehicleType === value ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30' : 'border-[#D4AF37]/30 bg-black/60'
-                    }`}
-                  >
-                    <Icon className={`w-8 h-8 mx-auto mb-2 ${vehicleType === value ? 'text-[#D4AF37]' : 'text-gray-400'}`} />
-                    <p className={`text-sm font-bold ${vehicleType === value ? 'text-[#D4AF37]' : 'text-gray-400'}`}>{label}</p>
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-
-            
-
-            {/* Payment Method Selection */}
-            <div>
-              <label className="block mb-4 text-base text-white font-bold uppercase tracking-wider">Payment Method</label>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { value: 'card', label: 'Card', icon: CreditCard },
-                  { value: 'cash', label: 'Cash', icon: DollarSign },
-                ].map(({ value, label, icon: Icon }) => (
-                  <motion.button
-                    key={value}
-                    onClick={() => setPaymentType(value)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`p-5 rounded-xl border-2 transition-all ${
-                      paymentType === value ? 'border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/30' : 'border-[#D4AF37]/30 bg-black/60'
-                    }`}
-                  >
-                    <Icon className={`w-8 h-8 mx-auto mb-2 ${paymentType === value ? 'text-[#D4AF37]' : 'text-gray-400'}`} />
-                    <p className={`text-sm font-bold ${paymentType === value ? 'text-[#D4AF37]' : 'text-gray-400'}`}>{label}</p>
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <GoldButton 
-            onClick={() => navigate(bookingMode === 'instant' ? '/confirm-dispatch' : '/home')} 
-            className="w-full mt-10"
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 p-6 bg-[#D4AF37]/10 rounded-xl border-2 border-[#D4AF37]/40 shadow-lg shadow-[#D4AF37]/5"
           >
-            {bookingMode === 'instant' ? 'Request Chauffeur Now' : 'Confirm Scheduled Ride'}
-          </GoldButton>
+            <p className="text-xs text-[#D4AF37] font-black uppercase tracking-widest mb-2">Pickup Location</p>
+            <p className="text-2xl text-white font-bold">{user?.hotelName || "The Grand Majestic Hotel"}</p>
+            <p className="text-xs text-gray-500 mt-3 font-medium uppercase">
+              Location automatically derived from concierge profile
+            </p>
+          </motion.div>
+
+          <div className="space-y-6 text-center">
+            <div className="py-10">
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <Car className="w-20 h-20 text-[#D4AF37] mx-auto opacity-50" />
+              </motion.div>
+              <p className="text-gray-400 mt-4 font-medium">
+                The guest will enter their destination and payment details <br />
+                via the automated tracking link.
+              </p>
+            </div>
+
+            {/* Requirement 1.1: Single Action: Call Car */}
+            <GoldButton 
+              onClick={() => navigate('/confirm-dispatch')} 
+              className="w-full py-6 text-xl font-black uppercase tracking-tighter"
+            >
+              Request Chauffeur Now
+            </GoldButton>
+            
+            <button 
+              onClick={() => navigate('/home')}
+              className="text-gray-500 text-sm font-bold uppercase hover:text-white transition-colors"
+            >
+              Cancel Request
+            </button>
+          </div>
         </GlassCard>
       </div>
     </div>
@@ -720,6 +647,7 @@ export const RideConfigScreen = () => {
 // Confirm Dispatch Screen
 export const ConfirmDispatchScreen = () => {
   const navigate = useNavigate();
+
   return (
     <div className="min-h-screen p-4 bg-black">
       <div className="max-w-2xl mx-auto">
@@ -727,56 +655,25 @@ export const ConfirmDispatchScreen = () => {
           onClick={() => navigate('/ride-config')}
           className="mb-6 text-base text-[#D4AF37] hover:text-[#B8962A] flex items-center gap-2 font-semibold"
           whileHover={{ x: -5 }}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
         >
           <ArrowLeft className="w-5 h-5" />
           Back
         </motion.button>
         <GlassCard className="p-8 text-center">
-          <motion.h2 
-            className="text-2xl mb-6 text-white font-bold"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Confirm & Dispatch
-          </motion.h2>
-          <motion.div 
-            className="mb-8 p-6 bg-[#D4AF37]/10 rounded-xl border-2 border-[#D4AF37]/40"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            whileHover={{ scale: 1.02 }}
-          >
+          <motion.h2 className="text-2xl mb-6 text-white font-bold">Confirm & Dispatch</motion.h2>
+          
+          <motion.div className="mb-8 p-6 bg-[#D4AF37]/10 rounded-xl border-2 border-[#D4AF37]/40">
             <p className="text-sm text-gray-400 font-medium">Estimated Fare</p>
-            <motion.p 
-              className="text-4xl text-white mb-3 font-bold"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              $45.00
-            </motion.p>
-            <motion.p 
-              className="text-base text-[#D4AF37] font-bold"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              Your Commission: $6.75 (15%)
-            </motion.p>
+            <p className="text-4xl text-white mb-3 font-bold">$45.00</p>
+            <p className="text-base text-[#D4AF37] font-bold">Your Commission: $6.75 (15%)</p>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+
+          <GoldButton 
+            onClick={() => navigate('/guest-details')} 
+            className="w-full uppercase font-black py-4"
           >
-            <GoldButton onClick={() => navigate('/driver-assignment-mode')} className="w-full">
-              Select Chauffeur
-            </GoldButton>
-          </motion.div>
+            Send Chauffeur Request
+          </GoldButton>
         </GlassCard>
       </div>
     </div>

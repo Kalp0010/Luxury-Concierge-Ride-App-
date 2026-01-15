@@ -15,8 +15,6 @@ import {
   Star,
   MapPin,
   Car,
-  Languages,
-  Award,
   Shield,
   Wifi,
   Music,
@@ -25,12 +23,11 @@ import {
   X,
   ChevronUp,
   Sparkles,
-  TrendingUp,
   User,
-  Lock,
   Clock,
-  Navigation,
-  Info
+  Info,
+  Lock,
+  Wallet
 } from 'lucide-react';
 
 // SCREEN 1: Driver Assignment Mode Choice
@@ -170,22 +167,27 @@ export const DriverListScreen = () => {
           </motion.button>
 
           {isMember && (
-            <motion.button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black/60 border-2 border-[#D4AF37]/30 hover:border-[#D4AF37]/50 text-[#D4AF37] font-bold transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <SlidersHorizontal className="w-5 h-5" />
-              Filters
-            </motion.button>
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30">
+              <Wallet className="w-4 h-4 text-[#D4AF37]" />
+              <span className="text-[10px] text-white font-black uppercase tracking-widest">Credit: ${user?.rideCredit?.toFixed(2)}</span>
+            </motion.div>
           )}
+
+          <motion.button
+            onClick={() => isMember ? setShowFilters(!showFilters) : navigate('/membership')}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black/60 border-2 border-[#D4AF37]/30 hover:border-[#D4AF37]/50 text-[#D4AF37] font-bold transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isMember ? <SlidersHorizontal className="w-5 h-5" /> : <Lock className="w-4 h-4" />}
+            {isMember ? 'Filters' : 'Unlock Filters'}
+          </motion.button>
         </div>
 
         <GlassCard className="p-8 mb-4">
-          <motion.h2 className="text-2xl mb-3 text-white font-bold">Available Chauffeurs</motion.h2>
+          <motion.h2 className="text-2xl mb-3 text-white font-bold uppercase italic tracking-tight">Available Chauffeurs</motion.h2>
           <p className="text-base text-gray-400 font-medium mb-6">
-            {filteredDrivers.length} driver{filteredDrivers.length !== 1 ? 's' : ''} available
+            {filteredDrivers.length} driver{filteredDrivers.length !== 1 ? 's' : ''} found for your schedule
           </p>
 
           <AnimatePresence>
@@ -196,7 +198,7 @@ export const DriverListScreen = () => {
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
               >
-                <h3 className="text-base font-bold text-white mb-4">Member Filters</h3>
+                <h3 className="text-base font-bold text-white mb-4">Search Filters</h3>
                 <div className="space-y-4">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
@@ -226,11 +228,16 @@ export const DriverListScreen = () => {
               <motion.div key={driver.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
                 <GlassCard className="p-5 border-white/5 relative overflow-hidden group">
                   <div className="flex items-center gap-5">
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-full bg-gray-800 border-2 border-[#D4AF37]/30 flex items-center justify-center overflow-hidden">
-                        <User className="text-gray-600 w-10 h-10" />
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-full bg-gray-800 border-2 border-[#D4AF37]/30 flex items-center justify-center overflow-hidden">
+                          <User className="text-gray-600 w-10 h-10" />
+                        </div>
+                        {driver.verified && <div className="absolute -bottom-1 -right-1 bg-[#D4AF37] rounded-full p-1 border-2 border-black"><Shield className="w-3 h-3 text-black" /></div>}
                       </div>
-                      {driver.verified && <div className="absolute -bottom-1 -right-1 bg-[#D4AF37] rounded-full p-1 border-2 border-black"><Shield className="w-3 h-3 text-black" /></div>}
+                      <div className="w-24 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 border border-white/10">
+                        <Car className="text-[#D4AF37] w-8 h-8 opacity-40 group-hover:opacity-100" />
+                      </div>
                     </div>
                     
                     <div className="flex-1">
@@ -249,24 +256,16 @@ export const DriverListScreen = () => {
                   <div className="mt-5 flex gap-3">
                     <button 
                       onClick={() => navigate('/driver-profile', { state: { driver } })}
-                      className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+                      className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-white/10"
                     >
-                      <Info className="w-4 h-4" /> Profile
+                      <Info className="w-4 h-4" /> View Profile
                     </button>
-                    {isMember ? (
-                      <GoldButton 
-                        onClick={() => navigate('/driver-confirmation', { state: { driver } })}
-                        className="flex-1 py-3 text-sm"
-                      >
-                        Select
-                      </GoldButton>
-                    ) : (
-                      <div className="flex-1 relative">
-                        <button className="w-full h-full py-3 rounded-xl bg-gray-800/40 text-gray-500 font-bold text-sm flex items-center justify-center gap-2 border border-white/5 cursor-not-allowed">
-                          <Lock className="w-4 h-4" /> Members
-                        </button>
-                      </div>
-                    )}
+                    <GoldButton 
+                      onClick={() => navigate('/driver-confirmation', { state: { driver } })}
+                      className="flex-1 py-3 text-[10px] font-black uppercase tracking-widest"
+                    >
+                      Select Chauffeur
+                    </GoldButton>
                   </div>
                 </GlassCard>
               </motion.div>
@@ -289,12 +288,19 @@ export const DriverProfileScreen = () => {
   return (
     <div className="min-h-screen p-4 bg-black">
       <div className="max-w-2xl mx-auto">
-        <motion.button onClick={() => navigate(-1)} className="mb-6 text-[#D4AF37] flex items-center gap-2 font-semibold"><ArrowLeft className="w-5 h-5" /> Back</motion.button>
+        <div className="flex items-center justify-between mb-6">
+          <motion.button onClick={() => navigate(-1)} className="text-[#D4AF37] flex items-center gap-2 font-semibold"><ArrowLeft className="w-5 h-5" /> Back</motion.button>
+          {isMember && (
+            <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-black uppercase">
+              <Wallet className="w-3.5 h-3.5" /> ${user?.rideCredit?.toFixed(2)} Credit
+            </div>
+          )}
+        </div>
 
         <GlassCard className="p-8">
           <motion.div className="text-center mb-8" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
             <div className="relative inline-block mb-4">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-black/50 border-4 border-[#D4AF37]/40 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-black/50 border-4 border-[#D4AF37]/40 flex items-center justify-center overflow-hidden">
                 <span className="text-6xl text-[#D4AF37] font-black">{driver.name.charAt(0)}</span>
               </div>
               {driver.verified && <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center border-4 border-black"><Shield className="w-6 h-6 text-black" /></div>}
@@ -303,48 +309,47 @@ export const DriverProfileScreen = () => {
             <div className="flex items-center justify-center gap-6 mt-4">
               <div className="text-center">
                 <p className="text-2xl text-[#D4AF37] font-bold">{driver.rating}</p>
-                <p className="text-[10px] text-gray-500 uppercase font-black">Rating</p>
+                <p className="text-[10px] text-gray-500 uppercase font-black tracking-tighter">Rating</p>
               </div>
               <div className="w-px h-8 bg-white/10"></div>
               <div className="text-center">
                 <p className="text-2xl text-white font-bold">{driver.experience}</p>
-                <p className="text-[10px] text-gray-500 uppercase font-black">Years Exp</p>
+                <p className="text-[10px] text-gray-500 uppercase font-black tracking-tighter">Years Exp</p>
               </div>
             </div>
           </motion.div>
 
           <div className="space-y-6">
             <div className="p-6 bg-black/40 rounded-2xl border-2 border-[#D4AF37]/20">
-              <h3 className="text-sm font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2"><Car className="w-5 h-5 text-[#D4AF37]" /> Vehicle Details</h3>
+              <h3 className="text-xs font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2"><Car className="w-4 h-4 text-[#D4AF37]" /> Vehicle Details</h3>
               <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                <div><p className="text-[10px] text-gray-500 uppercase font-black">Make/Model</p><p className="text-white font-bold">{driver.vehicle.brand} {driver.vehicle.model}</p></div>
-                <div><p className="text-[10px] text-gray-500 uppercase font-black">Plate</p><p className="text-white font-bold">{driver.vehicle.plate}</p></div>
-                <div><p className="text-[10px] text-gray-500 uppercase font-black">Year</p><p className="text-white font-bold">{driver.vehicle.year}</p></div>
-                <div><p className="text-[10px] text-gray-500 uppercase font-black">Interior</p><p className="text-white font-bold">{driver.vehicle.interior}</p></div>
+                <div><p className="text-[10px] text-gray-500 uppercase font-black">Make/Model</p><p className="text-white font-bold text-sm">{driver.vehicle.brand} {driver.vehicle.model}</p></div>
+                <div><p className="text-[10px] text-gray-500 uppercase font-black">Plate</p><p className="text-white font-bold text-sm">{driver.vehicle.plate}</p></div>
+                <div><p className="text-[10px] text-gray-500 uppercase font-black">Year</p><p className="text-white font-bold text-sm">{driver.vehicle.year}</p></div>
+                <div><p className="text-[10px] text-gray-500 uppercase font-black">Interior</p><p className="text-white font-bold text-sm">{driver.vehicle.interior}</p></div>
               </div>
             </div>
 
-            {isMember ? (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              {isMember ? (
                 <div className="p-6 bg-black/40 rounded-2xl border-2 border-[#D4AF37]/20">
-                  <h3 className="text-sm font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2"><Sparkles className="w-5 h-5 text-[#D4AF37]" /> Premium Amenities</h3>
+                  <h3 className="text-xs font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#D4AF37]" /> Premium Amenities</h3>
                   <div className="grid grid-cols-2 gap-3">
-                    {driver.amenities.wifi && <div className="p-3 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 flex items-center gap-2 text-xs text-white font-bold"><Wifi className="w-4 h-4 text-[#D4AF37]" /> WiFi</div>}
-                    {driver.amenities.music && <div className="p-3 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 flex items-center gap-2 text-xs text-white font-bold"><Music className="w-4 h-4 text-[#D4AF37]" /> Audio</div>}
-                    {driver.amenities.childSeat && <div className="p-3 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 flex items-center gap-2 text-xs text-white font-bold"><Baby className="w-4 h-4 text-[#D4AF37]" /> Child Seat</div>}
+                    {driver.amenities.wifi && <div className="p-3 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 flex items-center gap-2 text-xs text-white font-bold"><Wifi className="w-3.5 h-3.5" /> WiFi</div>}
+                    {driver.amenities.music && <div className="p-3 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 flex items-center gap-2 text-xs text-white font-bold"><Music className="w-3.5 h-3.5" /> Audio</div>}
+                    {driver.amenities.childSeat && <div className="p-3 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 flex items-center gap-2 text-xs text-white font-bold"><Baby className="w-3.5 h-3.5" /> Child Seat</div>}
                   </div>
                 </div>
-                <p className="text-gray-400 text-sm leading-relaxed italic">"A professional chauffeur dedicated to providing a seamless luxury experience. Certified for executive protection and concierge-level service."</p>
-                <GoldButton onClick={() => navigate('/driver-confirmation', { state: { driver } })} className="w-full py-5 text-xl uppercase font-black">Assign This Chauffeur</GoldButton>
-              </motion.div>
-            ) : (
-              <div className="p-10 text-center bg-[#D4AF37]/5 rounded-3xl border-2 border-dashed border-[#D4AF37]/30">
-                <Lock className="w-12 h-12 text-[#D4AF37] mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Member Profile Access</h3>
-                <p className="text-sm text-gray-400 mb-8 max-w-[280px] mx-auto leading-relaxed">Amenities, biography, and driver selection are exclusive to Members.</p>
-                <GoldButton onClick={() => navigate('/wallet')} className="px-10 py-4 uppercase font-black text-sm">Join Membership - $100</GoldButton>
-              </div>
-            )}
+              ) : (
+                <div className="p-8 text-center bg-[#D4AF37]/5 rounded-3xl border-2 border-dashed border-[#D4AF37]/30">
+                  <Lock className="w-10 h-10 text-[#D4AF37] mx-auto mb-3" />
+                  <p className="text-xs text-white font-black uppercase mb-1">Premium Amenities Locked</p>
+                  <button onClick={() => navigate('/membership')} className="text-[10px] text-[#D4AF37] underline uppercase font-black">Join Membership to View</button>
+                </div>
+              )}
+              <p className="text-gray-400 text-xs leading-relaxed italic">"Professional chauffeur providing a seamless luxury experience. Certified for executive protection and concierge-level service."</p>
+              <GoldButton onClick={() => navigate('/driver-confirmation', { state: { driver } })} className="w-full py-5 text-lg uppercase font-black">Assign This Chauffeur</GoldButton>
+            </motion.div>
           </div>
         </GlassCard>
       </div>

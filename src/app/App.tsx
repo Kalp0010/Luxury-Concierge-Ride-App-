@@ -23,6 +23,7 @@ import {
   NoDriversScreen,
 } from './screens/AllScreens';
 import { ConciergeHomeScreen } from './screens/ConciergeHomeScreen';
+import { PassengerTrackingWeb } from './screens/PassengerTrackingWeb';
 
 // Driver Selection Screens
 import {
@@ -35,6 +36,11 @@ import {
   GuestPreferenceScreen,
   DriverConfirmationScreen,
 } from './screens/DriverPreferencesScreens';
+import { WaitingForPaymentScreen } from './screens/WaitingForPaymentScreen';
+
+// Membership Screens
+import { MembershipScreen } from './screens/MembershipScreen';
+import { MembershipPaymentScreen } from './screens/MembershipPaymentScreen';
 
 export default function App() {
   return (
@@ -62,6 +68,12 @@ export default function App() {
             <Route path="/manager" element={<ManagerDashboardScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/no-drivers" element={<NoDriversScreen />} />
+            <Route path="/waiting-payment" element={<WaitingForPaymentScreen />} />
+            
+            {/* Passenger Tracking & Membership Flow */}
+            <Route path="/track-ride" element={<PassengerTrackingWeb />} />
+            <Route path="/membership" element={<MembershipScreen />} />
+            <Route path="/membership-payment" element={<MembershipPaymentScreen />} />
 
             {/* Driver Selection Screens */}
             <Route

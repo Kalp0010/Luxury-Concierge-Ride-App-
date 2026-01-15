@@ -1,4 +1,4 @@
-export type UserRole = 'concierge' | 'manager';
+export type UserRole = 'concierge' | 'manager' | 'passenger';
 
 export type RideStatus = 'creating' | 'matching' | 'assigned' | 'arriving' | 'onboard' | 'enroute' | 'completed' | 'cancelled';
 
@@ -17,18 +17,35 @@ export interface User {
   deviceBound: boolean;
   deviceName?: string;
   kycStatus: 'pending' | 'approved' | 'rejected';
-  isMember: boolean;
+  isMember: boolean; // Requirement 6.3: Unlocks driver selection
+  rideCredit: number; // Requirement 6.2: $100 credit logic
 }
 
 export interface Driver {
   id: string;
-  name: string;
+  name: string; // Note: Rendering logic must truncate last name per 6.5
   phone: string;
-  photo: string;
-  vehicle: string;
-  vehiclePlate: string;
+  photo: string; // Chauffeur headshot
+  vehicle: {
+    brand: string;
+    model: string;
+    plate: string;
+    year: string;
+    interior: string;
+    photo: string; // Requirement 5.2/5.3: Standardized vehicle photo
+  };
   rating: number;
-  eta?: number;
+  experience: string;
+  eta: number;
+  distance: number;
+  verified: boolean;
+  hotelPreferred: boolean;
+  amenities: {
+    wifi: boolean;
+    music: boolean;
+    childSeat: boolean;
+    refreshments: boolean;
+  };
 }
 
 export interface Guest {
@@ -55,6 +72,8 @@ export interface Ride {
   cashConfirmed?: boolean;
   rating?: number;
   tip?: number;
+  isScheduled?: boolean; // Requirement 5.1: Logic gate for manual selection
+  scheduledAt?: Date;
 }
 
 export interface Commission {

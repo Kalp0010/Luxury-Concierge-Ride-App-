@@ -1,16 +1,16 @@
-// app/context/AppContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
 import { User, Ride, Commission } from '../types';
 
 interface AppContextType {
   user: User | null;
-  setUser: (user: User | null) => void;
+  // Change: Use SetStateAction to allow both objects and functional updates (prev => next)
+  setUser: Dispatch<SetStateAction<User | null>>; 
   rides: Ride[];
-  setRides: (rides: Ride[]) => void;
+  setRides: Dispatch<SetStateAction<Ride[]>>;
   activeRide: Ride | null;
-  setActiveRide: (ride: Ride | null) => void;
+  setActiveRide: Dispatch<SetStateAction<Ride | null>>;
   commissions: Commission[];
-  setCommissions: (commissions: Commission[]) => void;
+  setCommissions: Dispatch<SetStateAction<Commission[]>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
